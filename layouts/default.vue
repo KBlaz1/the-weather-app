@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <!-- city navigation -->
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -24,18 +25,15 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
+    <!-- header -->
     <v-app-bar
       :clipped-left="clipped"
       fixed
       app
     >
+      <!-- icons on the left and title-->
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
       <v-btn
         icon
         @click.stop="clipped = !clipped"
@@ -49,7 +47,12 @@
         <v-icon>mdi-minus</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title" />
+
       <v-spacer />
+      <city-selector />
+      <v-spacer />
+
+      <!-- button on the right -->
       <v-btn
         icon
         @click.stop="rightDrawer = !rightDrawer"
@@ -57,11 +60,15 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
+
+    <!-- main is here -->
     <v-main>
       <v-container>
         <Nuxt />
       </v-container>
     </v-main>
+
+    <!-- navigation drawer on the right side (probably delete this at some point) -->
     <v-navigation-drawer
       v-model="rightDrawer"
       :right="right"
@@ -79,6 +86,8 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
+    <!-- just a footer ... -->
     <v-footer
       :absolute="!fixed"
       app
@@ -89,29 +98,31 @@
 </template>
 
 <script>
+import CitySelector from "~/components/CitySelector.vue"
 export default {
-  name: 'DefaultLayout',
+  name: "DefaultLayout",
+  components: { CitySelector },
   data () {
     return {
-      clipped: false,
+      clipped: true,
       drawer: true,
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
+          icon: "mdi-apps",
+          title: "Welcome",
+          to: "/"
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          icon: "mdi-chart-bubble",
+          title: "Inspire",
+          to: "/inspire"
         }
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Vuetify.js'
+      title: "Vuetify.js"
     }
   }
 }
