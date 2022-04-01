@@ -1,76 +1,83 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
+      <v-card class="d-flex flex-column">
         <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
+          Weather today in {{ cityName }}
         </v-card-title>
+        <v-card-subtitle class="d-flex align-center justify-center">
+          <span class="text-h3">{{ main.temp_feelsLike }}&deg;</span>
+          <img
+            :src="weather.icon"
+          />
+        </v-card-subtitle>
         <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
           <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
+          <v-row>
+
+            <!-- left -->
+            <v-col>
+              <v-row>
+                <v-col>
+                  <v-icon>mdi-card-text</v-icon> Description
+                </v-col>
+                <v-col>
+                  {{ weather.description }}
+                </v-col>
+              </v-row>
+              <hr>
+              <v-row>
+                <v-col>
+                  <v-icon>mdi-thermometer</v-icon>High/Low
+                </v-col>
+                <v-col>
+                  {{ main.temp_high }}&deg;/{{ main.temp_low}}&deg;
+                </v-col>
+              </v-row>
+              <hr>
+              <v-row>
+                <v-col>
+                  <v-icon>mdi-water-percent</v-icon> Humidity
+                </v-col>
+                <v-col>
+                  {{ main.humidity }}%
+                </v-col>
+              </v-row>
+              <hr>
+            </v-col>
+
+            <!-- right -->
+            <v-col cols="12" lg="6">
+              <v-row>
+                <v-col>
+                  <v-icon>mdi-weather-windy</v-icon> Wind
+                </v-col>
+                <v-col>
+                  {{ wind.speed }} m/s
+                </v-col>
+              </v-row>
+              <hr>
+              <v-row>
+                <v-col>
+                  <v-icon>mdi-eye</v-icon> Visibility
+                </v-col>
+                <v-col>
+                  {{ visibility }} m
+                </v-col>
+              </v-row>
+              <hr>
+              <v-row>
+                <v-col>
+                  <v-icon>mdi-format-vertical-align-center</v-icon> Pressure
+                </v-col>
+                <v-col>
+                  {{ main.pressure }} hPa
+                </v-col>
+              </v-row>
+              <hr>
+            </v-col>
+          </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
@@ -78,6 +85,60 @@
 
 <script>
 export default {
-  name: "IndexPage"
+  name: "IndexPage",
+  data () {
+    return {
+      weatherReport: {},
+      cityName: "",
+      visibility: "",
+      main: {
+        temp_feelsLike: "",
+        temp_high: "",
+        temp_low: "",
+        humidity: "",
+        pressure: ""
+      },
+      wind: {
+        speed: "",
+        direction: ""
+      },
+      weather: {
+        main: "",
+        description: "",
+        icon: ""
+      }
+    }
+  },
+  async mounted () {
+    await this.$axios.$get("http://api.openweathermap.org/data/2.5/weather", {
+      params: {
+        q: "ljubljana",
+        units: "metric",
+        appid: "0c6d6e357f5d50cb255cc984321a9319"
+      }
+    })
+      .then((res) => {
+        this.parseWeatherReport(res)
+        console.log("res:" + res)
+      })
+      .catch(err => console.log(err))
+  },
+  methods: {
+    parseWeatherReport (data) {
+      this.weatherReport = data
+      this.cityName = data.name
+      this.visibility = data.visibility
+      this.main.temp_feelsLike = data.main.feels_like
+      this.main.temp_high = data.main.temp_max
+      this.main.temp_low = data.main.temp_min
+      this.main.humidity = data.main.humidity
+      this.main.pressure = data.main.pressure
+      this.wind.speed = data.wind.speed
+      this.wind.direction = data.wind.deg
+      this.weather.main = data.weather[0].main
+      this.weather.description = data.weather[0].description
+      this.weather.icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+    }
+  }
 }
 </script>
