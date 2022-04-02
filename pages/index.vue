@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
-      <v-card class="d-flex flex-column">
+      <v-card v-if="weatherReport != null" class="d-flex flex-column">
         <v-card-title class="headline">
           Weather today in {{ cityName }}
         </v-card-title>
@@ -9,12 +9,11 @@
           <span class="text-h3">{{ main.temp_feelsLike }}&deg;</span>
           <img
             :src="weather.icon"
-          />
+          >
         </v-card-subtitle>
         <v-card-text>
           <hr class="my-3">
           <v-row>
-
             <!-- left -->
             <v-col>
               <v-row>
@@ -31,7 +30,7 @@
                   <v-icon>mdi-thermometer</v-icon>High/Low
                 </v-col>
                 <v-col>
-                  {{ main.temp_high }}&deg;/{{ main.temp_low}}&deg;
+                  {{ main.temp_high }}&deg;/{{ main.temp_low }}&deg;
                 </v-col>
               </v-row>
               <hr>
@@ -88,7 +87,7 @@ export default {
   name: "IndexPage",
   data () {
     return {
-      weatherReport: {},
+      weatherReport: null,
       cityName: "",
       visibility: "",
       main: {
@@ -109,7 +108,19 @@ export default {
       }
     }
   },
+  computed: {
+    displayedWeatherReport () {
+      return this.$store.state.weatherReports.displayedReport
+    }
+  },
+  watch: {
+    displayedWeatherReport (newReport) {
+      this.parseWeatherReport(newReport)
+      console.log("displayed report updated")
+    }
+  },
   async mounted () {
+    /*
     await this.$axios.$get("http://api.openweathermap.org/data/2.5/weather", {
       params: {
         q: "ljubljana",
@@ -122,6 +133,7 @@ export default {
         console.log("res:" + res)
       })
       .catch(err => console.log(err))
+      */
   },
   methods: {
     parseWeatherReport (data) {

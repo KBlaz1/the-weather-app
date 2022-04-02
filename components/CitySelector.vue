@@ -35,17 +35,12 @@ export default {
   watch: {
     search (cityName) {
       // parameter cityName is empty
-      if (cityName === "")
-        return
-
-      // Items have already been requested
-      if (this.isLoading)
+      if (cityName === null || cityName === "")
         return
 
       this.isLoading = true
 
       // Lazily load input items
-      console.log("https://api.api-ninjas.com/v1/city?name=" + cityName)
       this.$axios.$get("https://api.api-ninjas.com/v1/city", {
         params: {
           name: cityName,
@@ -56,13 +51,19 @@ export default {
         }
       })
         .then((res) => {
-          console.log(res)
           this.entries = res
         })
         .catch((err) => {
-          console.log(err)
+          console.log(cityName + err)
         })
         .finally(() => (this.isLoading = false))
+    },
+    async select (select) {
+      if (select === "" || select === null)
+        return
+
+      const report = await this.$store.dispatch("weatherReports/getWeatherReport", select)
+      this.$store.commit("weatherReports/SET_DISPLAYED_REPORT", report)
     }
   }
 }
