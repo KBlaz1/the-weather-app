@@ -58,12 +58,11 @@ export default {
         })
         .finally(() => (this.isLoading = false))
     },
-    async select (select) {
+    select (select) {
       if (select === "" || select === null)
         return
 
-      const report = await this.$store.dispatch("weatherReports/getWeatherReport", select)
-      this.$store.commit("weatherReports/SET_DISPLAYED_REPORT", report)
+      this.$router.push("/" + select)
     }
   }
 }
