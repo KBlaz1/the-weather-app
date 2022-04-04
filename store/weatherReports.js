@@ -27,6 +27,10 @@ export const actions = {
     } catch (err) {
       console.log(err)
     }
+  },
+  getCitiesFromStorage ({ commit }) {
+    const cities = JSON.parse(localStorage.getItem("cities"))
+    cities.forEach(city => commit("SET_REPORT", city))
   }
 }
 
@@ -39,6 +43,8 @@ export const mutations = {
       state.weatherReports.push(report)
     else
       state.weatherReports[state.weatherReports.indexOf(weatherReportFound)] = report
+
+    localStorage.setItem("cities", JSON.stringify(state.weatherReports.map(report => ({ name: report.name }))))
   },
   SET_DISPLAYED_REPORT (state, report) {
     state.displayedReport = report

@@ -55,6 +55,9 @@ export default {
       fixed: false,
       title: "The Weather"
     }
+  },
+  created () {
+    this.$store.dispatch("weatherReports/getCitiesFromStorage", this.$route.params.slug)
   }
 }
 </script>

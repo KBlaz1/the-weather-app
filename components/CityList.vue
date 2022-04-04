@@ -21,9 +21,6 @@ export default {
       items: []
     }
   },
-  mounted () {
-    this.items = this.$store.state.weatherReports.weatherReports
-  },
   computed: {
     onWeatherReportsChange () {
       return this.$store.state.weatherReports.weatherReports
@@ -33,6 +30,9 @@ export default {
     onWeatherReportsChange (newItems) {
       this.items = newItems
     }
+  },
+  mounted () {
+    this.items = this.$store.state.weatherReports.weatherReports
   }
 }
 </script>
