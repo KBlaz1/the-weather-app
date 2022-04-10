@@ -29,8 +29,10 @@ export const actions = {
     }
   },
   getCitiesFromStorage ({ commit }) {
-    const cities = JSON.parse(localStorage.getItem("cities"))
-    cities.forEach(city => commit("SET_REPORT", city))
+    if (localStorage.getItem("cities") !== null) {
+      const cities = JSON.parse(localStorage.getItem("cities"))
+      cities.forEach(city => commit("SET_REPORT", city))
+    }
   }
 }
 
